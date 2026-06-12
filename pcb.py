@@ -19,7 +19,7 @@ class PCB:
     crystal_boost_until: Optional[int] = None
     lifespan: Optional[int] = None     
     pc: int = 0                        
-    registers: list = field(default_factory=lambda: [0, 0, 0, 0])  # R1..R4
+    registers: list = field(default_factory=lambda: [0, 0, 0, 0])   
     flags: dict = field(default_factory=lambda: {"eq": False, "gt": False, "lt": False})
     labels: dict = field(default_factory=dict)
     program: list = field(default_factory=list)  

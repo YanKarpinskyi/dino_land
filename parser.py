@@ -100,4 +100,4 @@ def _resolve_path(filename: str) -> str:
     candidate = os.path.join(C.BEHAVIORS_DIR, filename)
     if os.path.exists(candidate):
         return os.path.abspath(candidate)
-    return os.path.abspath(filename)  # поверне навіть якщо не існує (помилка при відкритті)
+    return os.path.abspath(filename) 

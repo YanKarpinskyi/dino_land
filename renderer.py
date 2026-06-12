@@ -61,10 +61,9 @@ class SpriteCache:
     def __init__(self, cell_size: int):
         self.cs = cell_size
         self._cache: dict = {}
-        self._anim_frame: int = 0          # глобальний лічильник кадрів
+        self._anim_frame: int = 0         
         self._anim_tick: int = 0
 
-        # Описи: (шлях, ширина_кадру, висота_кадру, кількість_кадрів)
         _defs = {
             "herbivore":    (_sp("stegosaurus", "PNG", "Stego_Idle.png"),   32, 32, 10),
             "predator":     (_sp("trex", "trex", "PNG", "Trex_Run.png"),    32, 32,  3),
@@ -161,9 +160,14 @@ class Renderer:
                 self._draw_cell(x, y, world)
 
         # Воду перемальовуємо щокадру для анімації
+        pter_positions = {
+            (pcb.x, pcb.y)
+            for pcb in world.processes.values()
+            if pcb.type == C.TYPE_PTERODACTYL
+        }
         for y in range(world.height):
             for x in range(world.width):
-                if world.get_cell(x, y) == C.CELL_WATER:
+                if world.get_cell(x, y) == C.CELL_WATER or (x, y) in pter_positions:
                     self._draw_cell(x, y, world)
 
         world.clear_dirty()
@@ -276,7 +280,7 @@ class Renderer:
             txt = self.font.render(line, True, color)
             self.screen.blit(txt, (self.panel_x + 10, y_offset))
             y_offset += 15
-            if y_offset > self.map_height_px - 100:
+            if y_offset > self.map_height_px - 300:
                 more = self.font.render(f"... +{len(world.processes)} total", True, (120, 120, 120))
                 self.screen.blit(more, (self.panel_x + 10, y_offset))
                 break

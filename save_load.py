@@ -42,7 +42,7 @@ def save_simulation(name: str, world: "World", scheduler: "Scheduler",
             "created_at_tick": pcb.created_at_tick,
             "creator_pid": pcb.creator_pid,
             "active_spears": pcb.active_spears,
-            "filename": _get_filename_for_type(pcb.type),  # для відновлення program
+            "filename": _get_filename_for_type(pcb.type),
         }
         processes_data.append(proc_data)
 
@@ -52,7 +52,7 @@ def save_simulation(name: str, world: "World", scheduler: "Scheduler",
         "queue_order": scheduler.get_queue_order(),
         "processes": processes_data,
         "population_history": logger.population_history,
-        "events": logger.events[-1000:],  # останні 1000 подій
+        "events": logger.events[-1000:],
     }
 
     with open(path, "w", encoding="utf-8") as f:

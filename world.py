@@ -12,7 +12,6 @@ class World:
         self.width = width
         self.height = height
 
-         Ландшафт: grid[y][x] = код клітинки
         self.grid: list[list[int]] = [
             [C.CELL_EMPTY] * width for _ in range(height)
         ]

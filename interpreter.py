@@ -147,7 +147,6 @@ def _dispatch(opcode: str, args: tuple, pcb: PCB, world: "World",
     else:
         raise ProcessRuntimeError(f"unknown opcode: {opcode}")
 
-    # Wrap-around програми
     if pcb.pc >= len(pcb.program):
         pcb.pc = 0
 
