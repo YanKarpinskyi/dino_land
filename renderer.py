@@ -67,7 +67,7 @@ class SpriteCache:
             "herbivore":    (_sp("stegosaurus", "PNG", "Stego_Idle.png"),   32, 32, 10),
             "predator":     (_sp("trex", "trex", "PNG", "Trex_Run.png"),    32, 32,  3),
             "pterodactyl":  (_sp("pterodactyl", "pterodactyl", "PNG", "ptero fly.png"), 16, 16, 2),
-            "hunter":       (_sp("triceratops", "triceratops", "PNG", "Tricer_Idle.png"), 16, 16, 9),
+            "hunter":       (_sp("npc.png"), 64, 64, 4),
             "spear":        (_sp("Pixel Weapons Pack 1 - Spears", "Fire Spear", "Fire Spear_1x.png"), 32, 32, 1),
             "crystal":      (_sp("Pixel Crystal Pack Vol. 1", "Amethyst.png"), 32, 32, 1),
             "water":        (_sp("SERENE_VILLAGE_REVAMPED", "Animated stuff", "water_waves_16x16.png"), 16, 16, 14),
@@ -226,9 +226,10 @@ class Renderer:
             return
 
         pcb = self.world.processes[pid]
+        boost = " ⚡BOOST" if getattr(pcb, 'crystal_boost_until', None) else ""
         lines = [
             f"PID: {pcb.pid}",
-            f"Type: {pcb.type}",
+            f"Type: {pcb.type}{boost}",
             f"HP: {pcb.hp}",
             f"State: {pcb.state}",
             f"Dir: {pcb.direction}",
