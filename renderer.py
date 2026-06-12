@@ -48,7 +48,6 @@ SHELL_HINTS = {
     "lo": _H_LOAD, "loa": _H_LOAD, "load": _H_LOAD,
 }
 
-# Базова папка спрайтів (відносно dino_land/)
 _SPRITES = os.path.join(os.path.dirname(__file__), "assets", "sprites")
 
 def _sp(*parts: str) -> str:
@@ -135,6 +134,7 @@ class Renderer:
         self.panel_width = 1280 - self.panel_x - 10
 
         self.selected_pid: int | None = None
+        self.show_process_table = False
         self._messages: list[tuple[str, tuple]] = []
         self._MAX_MESSAGES = 6
 
@@ -159,7 +159,6 @@ class Renderer:
             for (x, y) in world.dirty_cells:
                 self._draw_cell(x, y, world)
 
-        # Воду перемальовуємо щокадру для анімації
         pter_positions = {
             (pcb.x, pcb.y)
             for pcb in world.processes.values()
@@ -178,6 +177,7 @@ class Renderer:
         self._draw_tooltip(mouse_x, mouse_y)
         self._draw_panel(scheduler, world, paused)
         self._draw_shell_bar(shell)
+        self._draw_process_table(world)
         self._draw_messages()
 
     def _draw_cell(self, x: int, y: int, world: "World") -> None:
@@ -267,23 +267,8 @@ class Renderer:
             y_offset += 15
         y_offset += 8
 
-        sep = self.font.render("─" * 22, True, (80, 80, 80))
-        self.screen.blit(sep, (self.panel_x + 10, y_offset))
-        y_offset += 14
-        headers_txt = self.font.render("PID  TYPE  HP   ST  PC", True, (160, 160, 160))
-        self.screen.blit(headers_txt, (self.panel_x + 10, y_offset))
-        y_offset += 16
-
-        for pcb in sorted(world.processes.values(), key=lambda p: p.pid):
-            color = (255, 255, 200) if pcb.pid == self.selected_pid else (200, 200, 200)
-            line = f"{pcb.pid:<4} {pcb.type[:4]:<5} {pcb.hp:<4} {pcb.state[:2]:<3} {pcb.pc}"
-            txt = self.font.render(line, True, color)
-            self.screen.blit(txt, (self.panel_x + 10, y_offset))
-            y_offset += 15
-            if y_offset > self.map_height_px - 300:
-                more = self.font.render(f"... +{len(world.processes)} total", True, (120, 120, 120))
-                self.screen.blit(more, (self.panel_x + 10, y_offset))
-                break
+        hint = self.font.render("ПКМ — список процесів", True, (100, 100, 150))
+        self.screen.blit(hint, (self.panel_x + 10, y_offset))
         cmd_y = self.map_height_px - 290
         self.screen.blit(self.font.render("── COMMANDS ──", True, (100, 100, 100)),
                          (self.panel_x + 10, cmd_y))
@@ -320,20 +305,6 @@ class Renderer:
             txt = self.font.render(label, True, (180, 180, 180))
             self.screen.blit(txt, (self.panel_x + 24, leg_y))
             leg_y += 14
-        y_offset += 15
-        cell_legend = [
-            ((50, 205, 50),   "Fern  (їжа трав.)"),
-            ((85, 107, 47),   "Bush  (непрохідно)"),
-            ((70, 130, 180),  "Water (непрохідно)"),
-            ((105, 105, 105), "Rock  (непрохідно)"),
-            ((138, 43, 226),  "Crystal (буст)"),
-        ]
-        for col, label in cell_legend:
-            pygame.draw.rect(self.screen, col,
-                             pygame.Rect(self.panel_x + 10, y_offset + 2, 10, 10))
-            txt = self.font.render(label, True, (180, 180, 180))
-            self.screen.blit(txt, (self.panel_x + 24, y_offset))
-            y_offset += 14
 
     def _draw_shell_bar(self, shell: "Shell") -> None:
         bar_y = self.map_height_px + 2
@@ -372,3 +343,49 @@ class Renderer:
             surf.blit(txt, (3, 1))
             self.screen.blit(surf, (x, y))
             y += self.font.get_height() + 3
+
+    def handle_click(self, mx: int, my: int) -> None:
+        """ЛКМ на карті — виділити істоту; ПКМ — відкрити/закрити таблицю процесів."""
+        pass 
+
+    def _draw_process_table(self, world: "World") -> None:
+        """Плаваюче вікно таблиці процесів — відкривається по ПКМ."""
+        if not self.show_process_table:
+            return
+
+        rows = sorted(world.processes.values(), key=lambda p: p.pid)
+        row_h = 15
+        win_w = 280
+        win_h = min(len(rows) * row_h + 36, 400)
+        win_x = self.panel_x - win_w - 4
+        win_y = 40
+
+        # Фон вікна
+        surf = pygame.Surface((win_w, win_h))
+        surf.set_alpha(235)
+        surf.fill((30, 30, 40))
+        pygame.draw.rect(surf, (90, 90, 130), pygame.Rect(0, 0, win_w, win_h), 1)
+
+        # Заголовок
+        title = self.font.render("PID  TYPE      HP    ST   PC", True, (160, 160, 200))
+        surf.blit(title, (6, 4))
+        pygame.draw.line(surf, (70, 70, 100), (0, 18), (win_w, 18))
+
+        # Рядки
+        y = 22
+        for pcb in rows:
+            if y + row_h > win_h - 10:
+                more = self.font.render(f"  ... ще {len(rows)} процесів", True, (120, 120, 120))
+                surf.blit(more, (6, y))
+                break
+            color = (255, 255, 200) if pcb.pid == self.selected_pid else (200, 200, 210)
+            line = f"{pcb.pid:<5}{pcb.type[:9]:<10}{pcb.hp:<6}{pcb.state[:2]:<5}{pcb.pc}"
+            txt = self.font.render(line, True, color)
+            surf.blit(txt, (6, y))
+            y += row_h
+
+        # Підказка закрити
+        close = self.font.render("ПКМ — закрити", True, (90, 90, 110))
+        surf.blit(close, (6, win_h - 13))
+
+        self.screen.blit(surf, (win_x, win_y))

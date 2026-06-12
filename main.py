@@ -85,6 +85,16 @@ class DinoLand:
                 self.shell.activate()
             elif event.key == pygame.K_SPACE:
                 self.paused = not self.paused
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 3:  # ПКМ
+                self.renderer.show_process_table = not self.renderer.show_process_table
+            elif event.button == 1:  # ЛКМ — виділити істоту
+                mx, my = event.pos
+                cs = C.CELL_SIZE_PX
+                if mx < C.MAP_WIDTH * cs and my < C.MAP_HEIGHT * cs:
+                    cx, cy = mx // cs, my // cs
+                    pid = self.world.entity_map[cy][cx]
+                    self.renderer.selected_pid = pid
 
     def run(self) -> None:
         while self.running:
