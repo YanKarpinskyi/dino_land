@@ -8,24 +8,24 @@ import constants as C
 @dataclass
 class PCB:
     pid: int
-    type: str                          # herbivore | predator | pterodactyl | hunter | spear
-    state: str = C.STATE_NEW           # NEW | READY | RUNNING | TERMINATED
+    type: str                      
+    state: str = C.STATE_NEW           
     x: int = 0
     y: int = 0
-    direction: str = C.DIR_N           # N | S | E | W
+    direction: str = C.DIR_N           
     hp: int = 0
     priority: int = 1
     instructions_per_tick: int = 1
     crystal_boost_until: Optional[int] = None
-    lifespan: Optional[int] = None     # тактів до самознищення (тільки для спису)
-    pc: int = 0                        # Program Counter
+    lifespan: Optional[int] = None     
+    pc: int = 0                        
     registers: list = field(default_factory=lambda: [0, 0, 0, 0])  # R1..R4
     flags: dict = field(default_factory=lambda: {"eq": False, "gt": False, "lt": False})
     labels: dict = field(default_factory=dict)
-    program: list = field(default_factory=list)  # спільний об'єкт (не копіюється)
+    program: list = field(default_factory=list)  
     created_at_tick: int = 0
-    creator_pid: Optional[int] = None  # для спису
-    active_spears: int = 0             # кількість активних списів (для мисливця)
+    creator_pid: Optional[int] = None
+    active_spears: int = 0           
 
     # --- Priority mapping per type ---
     TYPE_PRIORITY = {
@@ -63,7 +63,7 @@ class PCB:
 
     def get_register(self, name: str) -> int:
         """Повернути значення регістру R1–R4."""
-        idx = int(name[1]) - 1   # R1→0 .. R4→3
+        idx = int(name[1]) - 1
         return self.registers[idx]
 
     def set_register(self, name: str, value: int) -> None:

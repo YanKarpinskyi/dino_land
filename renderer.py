@@ -51,7 +51,6 @@ SHELL_HINTS = {
 # Базова папка спрайтів (відносно dino_land/)
 _SPRITES = os.path.join(os.path.dirname(__file__), "assets", "sprites")
 
-
 def _sp(*parts: str) -> str:
     return os.path.join(_SPRITES, *parts)
 
@@ -170,6 +169,8 @@ class Renderer:
         world.clear_dirty()
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
+        # if (0 <= mouse_x < self.map_width_px and 0 <= mouse_y < self.map_height_px):
+        #     self._draw_tooltip(mouse_x, mouse_y)
         self._draw_tooltip(mouse_x, mouse_y)
         self._draw_panel(scheduler, world, paused)
         self._draw_shell_bar(shell)
@@ -180,11 +181,9 @@ class Renderer:
                            self.cell_size, self.cell_size)
         code = world.get_cell(x, y)
 
-        # Тло клітинки
         color = COLOR_MAP.get(code, (100, 100, 100))
         pygame.draw.rect(self.screen, color, rect)
 
-        # Спрайт тайлу (вода, кристал)
         if code == C.CELL_WATER:
             spr = self.sprites.get_water_frame()
             if spr:
@@ -204,7 +203,6 @@ class Renderer:
             if spr:
                 self.screen.blit(spr, rect)
             else:
-                # Fallback — кружечок якщо спрайт не завантажився
                 ent_color = ENTITY_COLORS.get(pcb.type, (255, 255, 255))
                 pygame.draw.circle(self.screen, ent_color,
                                    rect.center, self.cell_size // 3)
@@ -215,11 +213,14 @@ class Renderer:
     def _draw_tooltip(self, mx: int, my: int) -> None:
         if mx < 0 or mx >= self.map_width_px or my < 0 or my >= self.map_height_px:
             return
+
         x = mx // self.cell_size
         y = my // self.cell_size
         pid = self.world.entity_map[y][x]
+
         if pid is None or pid not in self.world.processes:
             return
+
         pcb = self.world.processes[pid]
         lines = [
             f"PID: {pcb.pid}",
@@ -279,10 +280,42 @@ class Renderer:
                 more = self.font.render(f"... +{len(world.processes)} total", True, (120, 120, 120))
                 self.screen.blit(more, (self.panel_x + 10, y_offset))
                 break
+        cmd_y = self.map_height_px - 290
+        self.screen.blit(self.font.render("── COMMANDS ──", True, (100, 100, 100)),
+                         (self.panel_x + 10, cmd_y))
+        cmd_y += 15
+        commands_help = [
+            ("/          — відкрити shell", (150, 150, 255)),
+            ("SPACE      — пауза / старт",  (200, 200, 200)),
+            ("CREATE f x y — створити",     (200, 200, 200)),
+            ("KILL <pid>   — знищити",       (200, 200, 200)),
+            ("INFO <pid>   — інфо",          (200, 200, 200)),
+            ("SPEED <1-10> — швидкість",     (200, 200, 200)),
+            ("PAUSE / START",                (200, 200, 200)),
+            ("SAVE_SIM / LOAD_SIM <name>",   (200, 200, 200)),
+        ]
+        for line, col in commands_help:
+            self.screen.blit(self.font.render(line, True, col),
+                             (self.panel_x + 10, cmd_y))
+            cmd_y += 14
 
-        y_offset = self.map_height_px - 145
+        leg_y = self.map_height_px - 145
         self.screen.blit(self.font.render("── MAP LEGEND ──", True, (100, 100, 100)),
-                         (self.panel_x + 10, y_offset))
+                         (self.panel_x + 10, leg_y))
+        leg_y += 15
+        cell_legend = [
+            ((50, 205, 50),   "Fern  (їжа трав.)"),
+            ((85, 107, 47),   "Bush  (непрохідно)"),
+            ((70, 130, 180),  "Water (непрохідно)"),
+            ((105, 105, 105), "Rock  (непрохідно)"),
+            ((138, 43, 226),  "Crystal (буст)"),
+        ]
+        for col, label in cell_legend:
+            pygame.draw.rect(self.screen, col,
+                             pygame.Rect(self.panel_x + 10, leg_y + 2, 10, 10))
+            txt = self.font.render(label, True, (180, 180, 180))
+            self.screen.blit(txt, (self.panel_x + 24, leg_y))
+            leg_y += 14
         y_offset += 15
         cell_legend = [
             ((50, 205, 50),   "Fern  (їжа трав.)"),

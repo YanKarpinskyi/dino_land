@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import constants as C
 
-# ─── Кеш: {filename: (instructions_list, labels_dict)} ───────────────────────
 behavior_cache: dict[str, tuple[list, dict]] = {}
 
 
@@ -14,7 +13,6 @@ class ParseError(Exception):
         self.message = message
 
 
-# Відомі інструкції та їх кількість аргументів
 _INSTRUCTIONS = {
     "ШАГ":            0,
     "НАЛІВО":         0,
@@ -47,14 +45,13 @@ def parse_program(filename: str) -> tuple[list, dict]:
     if path in behavior_cache:
         return behavior_cache[path]
 
-    instructions: list[tuple] = []   # список (opcode, *args)
-    labels: dict[str, int] = {}      # {мітка: індекс у instructions}
+    instructions: list[tuple] = []  
+    labels: dict[str, int] = {}  
 
     with open(path, "r", encoding="utf-8") as f:
         raw_lines = f.readlines()
 
     for line_no, raw in enumerate(raw_lines, start=1):
-        # Видалити коментар та зайві пробіли
         line = raw.split(";")[0].strip()
         if not line:
             continue
@@ -73,7 +70,6 @@ def parse_program(filename: str) -> tuple[list, dict]:
                 raise ParseError(line_no, "МІТКА потребує одного аргументу")
             label_name = actual_args[0]
             labels[label_name] = len(instructions)
-            # Мітки не додаються як інструкції — тільки в словник
             continue
 
         if len(actual_args) != expected_args:
@@ -99,10 +95,8 @@ def _resolve_path(filename: str) -> str:
     """Якщо шлях не абсолютний — шукати у папці behaviors/."""
     if os.path.isabs(filename):
         return filename
-    # Якщо вже повний відносний шлях з behaviors/ — повернути як є
     if os.path.exists(filename):
         return os.path.abspath(filename)
-    # Шукати у behaviors/
     candidate = os.path.join(C.BEHAVIORS_DIR, filename)
     if os.path.exists(candidate):
         return os.path.abspath(candidate)

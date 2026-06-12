@@ -1,7 +1,7 @@
 """main.py — точка входу, головний цикл."""
 import sys
 import pygame
-import random                          # ← додати
+import random                      
 from typing import Optional
 
 import constants as C
@@ -12,8 +12,8 @@ from renderer import Renderer
 from shell import Shell
 from save_load import save_simulation, load_simulation
 from interpreter import _terminate
-from pcb import PCB                     # ← додати
-import parser as p                     # ← додати (бажано перейменувати модуль пізніше)
+from pcb import PCB                  
+import parser as p                  
 
 
 class DinoLand:
@@ -31,7 +31,6 @@ class DinoLand:
         self.paused = False
         self.running = True
         
-        # Завантажити початкову карту
         self.world.load_map(C.MAPS_DIR + "/default.txt")
         self._spawn_initial_population()
 
@@ -81,7 +80,6 @@ class DinoLand:
             self.running = False
         elif event.type == pygame.KEYDOWN:
             if self.shell.active:
-                # Shell активний — всі клавіші йдуть до нього
                 self.shell.handle_keydown(event)
             elif event.key == pygame.K_SLASH or event.unicode == "/":
                 self.shell.activate()

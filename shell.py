@@ -34,7 +34,7 @@ class Shell:
         if event.key == pygame.K_RETURN:
             self._execute(self.input_buffer)
             self.input_buffer = ""
-            if C.SHELL_PAUSES:  # з constants.py: SHELL_PAUSES
+            if C.SHELL_PAUSES:
                 self.game.paused = True
         elif event.key == pygame.K_ESCAPE:
             self.deactivate()
@@ -182,7 +182,6 @@ class Shell:
     def render(self, surface: pygame.Surface, font: pygame.font.Font) -> None:
         if not self.active:
             return
-        # Чорна смуга знизу
         rect = pygame.Rect(0, surface.get_height() - 40, surface.get_width(), 40)
         pygame.draw.rect(surface, (0, 0, 0), rect)
         pygame.draw.rect(surface, (255, 255, 255), rect, 1)

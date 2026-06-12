@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
 class Scheduler:
     def __init__(self):
-        # Індекс 0 не використовується; черги 1..10
         self.queues: list[deque] = [deque() for _ in range(11)]
         self._pid_counter: int = 0
         self.tick_count: int = 0
@@ -44,15 +43,12 @@ class Scheduler:
         self.tick_count += 1
         tick = self.tick_count
 
-        # Виконуємо по одному процесу з кожної черги (від вищого пріоритету до нижчого)
         for priority in range(10, 0, -1):
             if not self.queues[priority]:
                 continue
 
-            # Взяти один процес з черги
             pcb = self.queues[priority].popleft()
 
-            # Перевірка: чи процес ще існує?
             if pcb.pid not in world.processes:
                 continue
             if pcb.state == C.STATE_TERMINATED:
@@ -60,19 +56,17 @@ class Scheduler:
 
             pcb.state = C.STATE_RUNNING
 
-            # HP decay (крім спису)
             if pcb.type != C.TYPE_SPEAR:
-                # HP decay (крім спису)
                 if pcb.type != C.TYPE_SPEAR:
-                    pcb.hp -= C.HP_DECAY_PER_TICK
+                    if self.tick_count % C.HP_DECAY_INTERVAL == 0:
+                        pcb.hp -= C.HP_DECAY_PER_TICK
                     if pcb.hp <= 0:
                         _terminate(pcb, world, logger, self, tick)
                         continue
                 if pcb.hp <= 0:
                     _terminate(pcb, world, logger, self, tick)
-                    continue  # процес видалено, не повертаємо в чергу
+                    continue
 
-            # Lifespan для спису
             if pcb.lifespan is not None:
                 pcb.lifespan -= 1
                 if pcb.lifespan <= 0:
@@ -82,27 +76,22 @@ class Scheduler:
                     _terminate(pcb, world, logger, self, tick)
                     continue
 
-            # Перевірка кристального бусту
             if pcb.crystal_boost_until is not None and tick > pcb.crystal_boost_until:
                 pcb.instructions_per_tick = 1
                 pcb.crystal_boost_until = None
 
-            # Виконати instructions_per_tick інструкцій
             for _ in range(pcb.instructions_per_tick):
                 if pcb.pid not in world.processes:
                     break
                 execute_instruction(pcb, world, logger, self, tick)
 
-            # Повернути процес у чергу, якщо він ще живий
             if pcb.state != C.STATE_TERMINATED and pcb.pid in world.processes:
                 pcb.state = C.STATE_READY
-                self.queues[priority].append(pcb)  # повертаємо в ту саму чергу
+                self.queues[priority].append(pcb)
 
-        # Раз на FERN_RESPAWN_INTERVAL тактів — відновити папороть
         if tick % C.FERN_RESPAWN_INTERVAL == 0:
             world.respawn_fern(C.FERN_RESPAWN_COUNT)
 
-        # Раз на 100 тактів — snapshot статистики
         if tick % 100 == 0:
             logger.snapshot(world, tick)
 

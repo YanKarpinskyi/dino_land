@@ -22,7 +22,6 @@ def save_simulation(name: str, world: "World", scheduler: "Scheduler",
     ensure_saves_dir()
     path = os.path.join(SAVES_DIR, f"{name}.json")
 
-    # Серіалізація PCB
     processes_data = []
     for pcb in world.processes.values():
         proc_data = {
@@ -76,17 +75,14 @@ def load_simulation(name: str, world: "World", scheduler: "Scheduler",
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # Очистити поточний стан
     world.processes.clear()
     world.entity_map = [[None] * world.width for _ in range(world.height)]
     world.dirty_cells.clear()
     logger.events = data.get("events", [])
     logger.population_history = data.get("population_history", [])
 
-    # Відновити карту
     world.grid = data["grid"]
 
-    # Відновити PCB
     for proc_data in data["processes"]:
         filename = proc_data.pop("filename")
         instructions, labels = p.parse_program(filename)
@@ -98,7 +94,6 @@ def load_simulation(name: str, world: "World", scheduler: "Scheduler",
         pcb.labels = labels
         world.add_entity(pcb)
 
-    # Відновити планувальник
     scheduler.tick_count = data["tick_count"]
     scheduler._pid_counter = max([pcb.pid for pcb in world.processes.values()] + [0])
     scheduler.queues = [deque() for _ in range(11)]

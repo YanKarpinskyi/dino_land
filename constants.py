@@ -26,13 +26,13 @@ FERN_RESPAWN_COUNT: int = _cfg["FERN_RESPAWN_COUNT"]
 
 # --- HP ---
 HP_DECAY_PER_TICK: int = _cfg["HP_DECAY_PER_TICK"]
-# HP_DECAY_INTERVAL: int = _cfg["HP_DECAY_INTERVAL"]
-ATTACK_POWER: dict = _cfg["ATTACK_POWER"]      # {"predator": 25, "hunter": 15, "spear": 50}
-INITIAL_HP: dict = _cfg["INITIAL_HP"]          # {"herbivore": 100, ...}
+HP_DECAY_INTERVAL: int = _cfg["HP_DECAY_INTERVAL"]
+ATTACK_POWER: dict = _cfg["ATTACK_POWER"]    
+INITIAL_HP: dict = _cfg["INITIAL_HP"]         
 
 # --- Crystal ---
 CRYSTAL_BOOST_TICKS: int = _cfg["CRYSTAL_BOOST_TICKS"]
-CRYSTAL_BOOST_IPT: int = 3                     # instructions_per_tick during boost
+CRYSTAL_BOOST_IPT: int = 3                   
 
 # --- Spear ---
 SPEAR_LIFESPAN_MIN: int = _cfg["SPEAR_LIFESPAN_MIN"]
@@ -89,8 +89,6 @@ STATE_TERMINATED = "TERMINATED"
 BEHAVIORS_DIR = os.path.join(os.path.dirname(__file__), "behaviors")
 MAPS_DIR = os.path.join(os.path.dirname(__file__), "maps")
 
-# Fern eating
 FERN_HEAL = 15
 
-# Corpse eating (predator)
 CORPSE_HEAL = 30

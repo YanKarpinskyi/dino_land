@@ -12,29 +12,23 @@ class World:
         self.width = width
         self.height = height
 
-        # Ландшафт: grid[y][x] = код клітинки
+         Ландшафт: grid[y][x] = код клітинки
         self.grid: list[list[int]] = [
             [C.CELL_EMPTY] * width for _ in range(height)
         ]
 
-        # Хто стоїть на клітинці: entity_map[y][x] = PID або None
         self.entity_map: list[list[Optional[int]]] = [
             [None] * width for _ in range(height)
         ]
 
-        # Всі живі процеси: {pid: PCB}
         self.processes: dict[int, PCB] = {}
 
-        # Список клітинок, що змінились → для renderer
         self.dirty_cells: set[tuple[int, int]] = set()
 
-        # Трупи: {(x,y): тип} — хижак може з'їсти
         self.corpses: dict[tuple[int, int], str] = {}
 
-        # Callback для рендерера
         self._dirty_callback: Optional[Callable] = None
 
-        # Оточення межею (255)
         self._init_border()
 
     # ── Ініціалізація ─────────────────────────────────────────────────────────
@@ -93,11 +87,9 @@ class World:
         self.mark_dirty(pcb.x, pcb.y)
 
     def move_entity(self, pcb: PCB, nx: int, ny: int) -> None:
-        # Звільнити стару клітинку
         if self.entity_map[pcb.y][pcb.x] == pcb.pid:
             self.entity_map[pcb.y][pcb.x] = None
         self.mark_dirty(pcb.x, pcb.y)
-        # Зайняти нову
         pcb.x = nx
         pcb.y = ny
         self.entity_map[ny][nx] = pcb.pid
@@ -188,10 +180,8 @@ class World:
             new_grid.append(row)
 
         self.grid = new_grid
-        # Скинути entity_map та процеси при завантаженні нової карти
         self.entity_map = [[None] * self.width for _ in range(self.height)]
         self.processes.clear()
-        # Позначити всі клітинки брудними
         for y in range(self.height):
             for x in range(self.width):
                 self.dirty_cells.add((x, y))
