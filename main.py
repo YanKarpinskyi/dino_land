@@ -14,7 +14,7 @@ from save_load import save_simulation, load_simulation
 from interpreter import _terminate
 from pcb import PCB                  
 import parser as p                  
-
+from pcb import _type_from_filename
 
 class DinoLand:
     def __init__(self):
@@ -37,9 +37,9 @@ class DinoLand:
     def _spawn_initial_population(self):
         spawns = [
             ("herbivore.txt", 10),
-            ("predator.txt", 4),
-            ("pterodactyl.txt", 3),
-            ("hunter.txt", 2),
+            ("predator.txt", 10),
+            ("pterodactyl.txt", 10),
+            ("hunter.txt", 4),
         ]
         for filename, count in spawns:
             filepath = C.BEHAVIORS_DIR + "/" + filename
@@ -49,14 +49,15 @@ class DinoLand:
                 print(f"Не вдалося завантажити {filename}: {e}")
                 continue
 
+            entity_type = _type_from_filename(filepath)
             placed = 0
             attempts = 0
             while placed < count and attempts < 1000:
                 attempts += 1
                 x = random.randint(1, self.world.width - 2)
                 y = random.randint(1, self.world.height - 2)
-                
-                if self.world.is_occupied(x, y) or not self.world.is_passable(x, y, "herbivore"):
+
+                if self.world.is_occupied(x, y) or not self.world.is_passable(x, y, entity_type):
                     continue
 
                 pid = self.scheduler.next_pid()

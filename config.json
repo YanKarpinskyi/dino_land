@@ -10,10 +10,10 @@
   "CELL_SIZE_PX": 24,
   "SHELL_PAUSES": false,
   "HP_DECAY_PER_TICK": 1,
-  "HP_DECAY_INTERVAL": 60,
-  "ATTACK_POWER": { "predator": 25, "hunter": 15, "spear": 50 },
+  "HP_DECAY_INTERVAL": 120,
+  "ATTACK_POWER": { "predator": 25, "pterodactyl": 20, "hunter": 15, "spear": 50 },
   "INITIAL_HP": { "herbivore": 100, "predator": 150, "pterodactyl": 80, "hunter": 120 },
-  "CRYSTAL_BOOST_TICKS": 20,
-  "SPEAR_LIFESPAN_MIN": 10,
-  "SPEAR_LIFESPAN_MAX": 15
+  "CRYSTAL_BOOST_TICKS": 300,
+  "SPEAR_LIFESPAN_MIN": 25,
+  "SPEAR_LIFESPAN_MAX": 40
 }

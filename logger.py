@@ -47,7 +47,8 @@ class Logger:
 
             f.write("\nPopulation History (every 100 ticks):\n")
             for snap in self.population_history[-20:]:
-                tick = snap.pop("tick")
-                f.write(f"  TICK {tick}: {snap}\n")
+                tick = snap["tick"]
+                snap_display = {k: v for k, v in snap.items() if k != "tick"}
+                f.write(f"  TICK {tick}: {snap_display}\n")
 
         print(f"Statistics saved to {filename}")

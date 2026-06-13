@@ -1,0 +1,41 @@
+=== DINO LAND STATISTICS ===
+
+Average Lifespan by Type:
+  spear: 189.3 ticks (n=977)
+  herbivore: 2367.4 ticks (n=10)
+  pterodactyl: 3731.5 ticks (n=2)
+  predator: 8690.0 ticks (n=1)
+
+Last 10 Events:
+  [TICK 31921] CREATED: {'tick': 31921, 'event': 'CREATED', 'pid': 1012, 'type': 'spear', 'x': 29, 'y': 6, 'creator_pid': 31}
+  [TICK 31931] CREATED: {'tick': 31931, 'event': 'CREATED', 'pid': 1013, 'type': 'spear', 'x': 25, 'y': 13, 'creator_pid': 33}
+  [TICK 31932] SPEAR_EXPIRED: {'tick': 31932, 'event': 'SPEAR_EXPIRED', 'pid': 1011, 'lifespan': 208}
+  [TICK 31932] DEATH: {'tick': 31932, 'event': 'DEATH', 'pid': 1011, 'type': 'spear', 'lifespan': 208}
+  [TICK 31934] CREATED: {'tick': 31934, 'event': 'CREATED', 'pid': 1014, 'type': 'spear', 'x': 30, 'y': 12, 'creator_pid': 32}
+  [TICK 31940] CREATED: {'tick': 31940, 'event': 'CREATED', 'pid': 1015, 'type': 'spear', 'x': 13, 'y': 11, 'creator_pid': 34}
+  [TICK 31967] CREATED: {'tick': 31967, 'event': 'CREATED', 'pid': 1016, 'type': 'spear', 'x': 25, 'y': 13, 'creator_pid': 33}
+  [TICK 31970] CREATED: {'tick': 31970, 'event': 'CREATED', 'pid': 1017, 'type': 'spear', 'x': 30, 'y': 12, 'creator_pid': 32}
+  [TICK 31976] CREATED: {'tick': 31976, 'event': 'CREATED', 'pid': 1018, 'type': 'spear', 'x': 13, 'y': 11, 'creator_pid': 34}
+  [TICK 32003] CREATED: {'tick': 32003, 'event': 'CREATED', 'pid': 1019, 'type': 'spear', 'x': 25, 'y': 13, 'creator_pid': 33}
+
+Population History (every 100 ticks):
+  TICK 30100: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 5}
+  TICK 30200: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 9}
+  TICK 30300: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 8}
+  TICK 30400: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 6}
+  TICK 30500: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 7}
+  TICK 30600: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 4}
+  TICK 30700: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 6}
+  TICK 30800: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 3}
+  TICK 30900: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 8}
+  TICK 31000: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 6}
+  TICK 31100: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 4}
+  TICK 31200: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 8}
+  TICK 31300: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 8}
+  TICK 31400: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 5}
+  TICK 31500: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 9}
+  TICK 31600: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 9}
+  TICK 31700: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 5}
+  TICK 31800: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 8}
+  TICK 31900: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 5}
+  TICK 32000: {'predator': 9, 'pterodactyl': 8, 'hunter': 4, 'spear': 7}

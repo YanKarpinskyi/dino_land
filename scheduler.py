@@ -57,12 +57,9 @@ class Scheduler:
             pcb.state = C.STATE_RUNNING
 
             if pcb.type != C.TYPE_SPEAR:
-                if pcb.type != C.TYPE_SPEAR:
-                    if self.tick_count % C.HP_DECAY_INTERVAL == 0:
-                        pcb.hp -= C.HP_DECAY_PER_TICK
-                    if pcb.hp <= 0:
-                        _terminate(pcb, world, logger, self, tick)
-                        continue
+                pcb._ticks_alive = getattr(pcb, '_ticks_alive', 0) + 1
+                if pcb._ticks_alive % C.HP_DECAY_INTERVAL == 0:
+                    pcb.hp -= C.HP_DECAY_PER_TICK
                 if pcb.hp <= 0:
                     _terminate(pcb, world, logger, self, tick)
                     continue

@@ -33,6 +33,7 @@ _INSTRUCTIONS = {
     "ЗЦІЛИТИ":        1,
     "ВИПАДКОВО":      0,
     "МІТКА":          1,
+    "FACE":           1,
 }
 
 
@@ -86,7 +87,10 @@ def parse_program(filename: str) -> tuple[list, dict]:
 
 
 def invalidate_cache(filename: str) -> None:
-    """Інвалідувати кеш для конкретного файлу (для RELOAD у shell)."""
+    """Інвалідувати кеш для конкретного файлу (для RELOAD у shell).
+    Нормалізує шлях так само як parse_program, щоб не лишалось
+    старих записів під відносним або абсолютним варіантом шляху.
+    """
     path = _resolve_path(filename)
     behavior_cache.pop(path, None)
 

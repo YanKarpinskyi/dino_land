@@ -3,13 +3,16 @@
 SCAN 3 predator
 ПОРІВНЯТИ R1 0
 ПЕРЕЙТИ_БІЛЬШЕ flee
+SCAN 4 pterodactyl     ; тікаємо від птеродактиля
+ПОРІВНЯТИ R1 0
+ПЕРЕЙТИ_БІЛЬШЕ flee
 LOOK
 ПОРІВНЯТИ R1 -1
-ПЕРЕЙТИ_РІВНО eat
+ПЕРЕЙТИ_РІВНО step_onto_fern
 ШАГ
 ПЕРЕЙТИ start
 
-МІТКА eat
+МІТКА step_onto_fern
 ШАГ
 ПЕРЕЙТИ start
 

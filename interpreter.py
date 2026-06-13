@@ -116,6 +116,18 @@ def _dispatch(opcode: str, args: tuple, pcb: PCB, world: "World",
         target = world.find_nearest(pcb.x, pcb.y, radius, target_type)
         pcb.set_register("R1", target.pid if target else 0)
         pcb.pc += 1
+        
+    elif opcode == "FACE":
+        target_pid = pcb.resolve_arg(args[0])
+        target = world.processes.get(target_pid)
+        if target is not None:
+            dx = target.x - pcb.x
+            dy = target.y - pcb.y
+            if abs(dx) >= abs(dy):
+                pcb.direction = C.DIR_E if dx > 0 else C.DIR_W
+            else:
+                pcb.direction = C.DIR_S if dy > 0 else C.DIR_N
+        pcb.pc += 1
 
     elif opcode == "LOOK":
         nx, ny = world.get_front_cell(pcb)
@@ -156,11 +168,13 @@ def _dispatch(opcode: str, args: tuple, pcb: PCB, world: "World",
 def _do_step(pcb: PCB, world: "World", tick: int) -> None:
     nx, ny = world.get_front_cell(pcb)
     if not world.is_passable(nx, ny, pcb.type):
-        return 
+        return
     if world.is_occupied(nx, ny):
         return
     world.move_entity(pcb, nx, ny)
     world.consume_cell(pcb, tick)
+    if pcb.type in (C.TYPE_PREDATOR, C.TYPE_HUNTER):
+        world.eat_corpse(pcb)
 
 
 def _jump_to(pcb: PCB, label: str) -> None:
@@ -200,7 +214,7 @@ def _terminate(pcb: PCB, world: "World", logger: "Logger",
         if creator:
             creator.active_spears = max(0, creator.active_spears - 1)
 
-    if pcb.type in (C.TYPE_HERBIVORE, C.TYPE_PTERODACTYL):
+    if pcb.type in (C.TYPE_HERBIVORE, C.TYPE_PTERODACTYL, C.TYPE_PREDATOR):
         world.add_corpse(pcb)
 
     world.remove_entity(pcb)

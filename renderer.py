@@ -169,11 +169,13 @@ class Renderer:
                 if world.get_cell(x, y) == C.CELL_WATER or (x, y) in pter_positions:
                     self._draw_cell(x, y, world)
 
+        if self.selected_pid is not None and self.selected_pid in world.processes:
+            sel = world.processes[self.selected_pid]
+            self._draw_cell(sel.x, sel.y, world)
+
         world.clear_dirty()
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        # if (0 <= mouse_x < self.map_width_px and 0 <= mouse_y < self.map_height_px):
-        #     self._draw_tooltip(mouse_x, mouse_y)
         self._draw_tooltip(mouse_x, mouse_y)
         self._draw_panel(scheduler, world, paused)
         self._draw_shell_bar(shell)
@@ -199,7 +201,6 @@ class Renderer:
 
         pygame.draw.rect(self.screen, (0, 0, 0), rect, 1)
 
-        # Істота
         pid = world.entity_map[y][x]
         if pid is not None and pid in world.processes:
             pcb = world.processes[pid]
@@ -211,8 +212,10 @@ class Renderer:
                 pygame.draw.circle(self.screen, ent_color,
                                    rect.center, self.cell_size // 3)
 
+            if getattr(pcb, 'crystal_boost_until', None):
+                pygame.draw.rect(self.screen, (180, 0, 255), rect, 2)  
             if self.selected_pid == pid:
-                pygame.draw.rect(self.screen, (255, 255, 0), rect, 2)
+                pygame.draw.rect(self.screen, (255, 255, 0), rect, 2) 
 
     def _draw_tooltip(self, mx: int, my: int) -> None:
         if mx < 0 or mx >= self.map_width_px or my < 0 or my >= self.map_height_px:
@@ -374,11 +377,14 @@ class Renderer:
 
         # Рядки
         y = 22
+        shown = 0
         for pcb in rows:
             if y + row_h > win_h - 10:
-                more = self.font.render(f"  ... ще {len(rows)} процесів", True, (120, 120, 120))
+                remaining = len(rows) - shown
+                more = self.font.render(f"  ... ще {remaining} процесів", True, (120, 120, 120))
                 surf.blit(more, (6, y))
                 break
+            shown += 1
             color = (255, 255, 200) if pcb.pid == self.selected_pid else (200, 200, 210)
             line = f"{pcb.pid:<5}{pcb.type[:9]:<10}{pcb.hp:<6}{pcb.state[:2]:<5}{pcb.pc}"
             txt = self.font.render(line, True, color)

@@ -2,6 +2,7 @@
 import json
 import os
 from typing import TYPE_CHECKING
+from collections import deque
 
 if TYPE_CHECKING:
     from world import World
@@ -42,6 +43,7 @@ def save_simulation(name: str, world: "World", scheduler: "Scheduler",
             "created_at_tick": pcb.created_at_tick,
             "creator_pid": pcb.creator_pid,
             "active_spears": pcb.active_spears,
+            "ticks_alive": getattr(pcb, '_ticks_alive', 0),
             "filename": _get_filename_for_type(pcb.type),
         }
         processes_data.append(proc_data)
@@ -85,11 +87,11 @@ def load_simulation(name: str, world: "World", scheduler: "Scheduler",
 
     for proc_data in data["processes"]:
         filename = proc_data.pop("filename")
+        ticks_alive = proc_data.pop("ticks_alive", 0)
         instructions, labels = p.parse_program(filename)
 
-        pcb = PCB(
-            **{k: v for k, v in proc_data.items() if k != "filename"}
-        )
+        pcb = PCB(**proc_data)
+        pcb._ticks_alive = ticks_alive
         pcb.program = instructions
         pcb.labels = labels
         world.add_entity(pcb)

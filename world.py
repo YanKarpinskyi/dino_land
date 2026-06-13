@@ -128,6 +128,7 @@ class World:
             pcb.crystal_boost_until = tick + C.CRYSTAL_BOOST_TICKS
             pcb.instructions_per_tick = C.CRYSTAL_BOOST_IPT
             self.set_cell(pcb.x, pcb.y, C.CELL_EMPTY)
+            self.mark_dirty(pcb.x, pcb.y)
 
     def eat_corpse(self, pcb: PCB) -> bool:
         """Хижак з'їдає труп на своїй клітинці. Повертає True якщо з'їв."""
